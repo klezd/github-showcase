@@ -6,7 +6,11 @@ import styles from './styles.module.css';
 
 function Home() {
   const navigate = useNavigate();
-  const isLoggedIn = useSelector(s=> s.isLoggedin);
+  const logStatRedux = useSelector(s=> s.isLoggedin);
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn") 
+      ? localStorage.getItem("isLoggedIn") === "true" && true
+      : logStatRedux;
   
   useEffect(() => {
     if(!isLoggedIn) {

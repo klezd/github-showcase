@@ -2,6 +2,7 @@ export const LOGIN = 'LOGIN';
 export const SIGNUP = 'SIGNUP';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_WITH_GOOGLE = 'LOGIN_WITH_GOOGLE';
+export const GET_GITHUB_TOKEN = "GET_GITHUB_TOKEN";
 export const LOGIN_WITH_FACEBOOK = "LOGIN_WITH_FACEBOOK";
 export const LOGIN_WITH_GITHUB = "LOGIN_WITH_GITHUB";
 

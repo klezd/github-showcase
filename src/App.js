@@ -13,6 +13,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" exact element={<Home />}></Route>
+            <Route path="/home" exact element={<Home />}></Route>
             <Route
               path="/auth/login-with-github"
               element={<LoginWithGithub />}
