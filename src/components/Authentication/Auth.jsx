@@ -5,15 +5,20 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from '@mui/material/Button';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import styles from './styles.module.css';
+
 import { loginGithub } from "../../store/action";
 
 function Authentication() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(s=> s.isLoggedin);
-  
+  const logStatRedux = useSelector(s=> s.isLoggedin);
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn") 
+      ? localStorage.getItem("isLoggedIn") === "true" && true
+      : logStatRedux;
+    
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn){
       console.log(' User Logged in')
       navigate('/home')
     }

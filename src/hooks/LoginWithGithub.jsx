@@ -9,13 +9,10 @@ function LoginWithGithub() {
   const location = useLocation();
   const dispatch = useDispatch();
   // ?code=513cbac8a8cf78c9a86f&state=19109719972809
-  const code = getQueryParams(location.search);
-  
-  console.log(code);
+  const code = getQueryParams(location.search).code;
 
   React.useEffect(() => {
     if(code) {
-      console.count('login get token')
       dispatch(getGithubAccessToken(code))
     }
   }, [dispatch, code]);
