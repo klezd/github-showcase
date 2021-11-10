@@ -1,0 +1,96 @@
+.appbar {
+  display: flex;
+  justify-content: space-between;
+}
+.container {
+  position: relative;
+}
+
+.background {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-color: rgb(240, 248, 255);
+  z-index: -1;
+  border-radius: 10px 10px 0 0;
+  box-shadow: rgba(240, 248, 255, 0.3) 0px 1px 2px 0px, rgba(240, 248, 255, 0.15) 0px 1px 3px 1px;
+}
+
+.heading {
+  padding: 16px;
+  position: relative;
+  max-height: 330px;
+  min-height: 120px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  padding: 4px;
+}
+
+.image {
+  border-radius: 50%;
+  padding: 6px;
+  max-width: 300px;
+  max-height: 300px;
+  min-width: 120px;
+  width: 50%;
+  height: auto;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.image img {
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.title {
+  max-width: 500px;
+  max-height: 300px;
+  width: 50%;
+  padding:12px;
+  padding-top: 20px;
+  text-align: right;
+  cursor: pointer;
+}
+
+.title span {
+  font-size: 0.7rem;
+  font-style: italic;
+  margin-top: 10px;
+}
+.title .name {
+  font-weight: 800;
+  font-size: 1.5rem !important;
+  text-align: center !important;
+  margin-bottom: 24px;
+}
+
+.indexData {
+  margin-top: 12px;
+  text-align: left !important;
+  padding: 8px;
+}
+
+.indexData > span {
+  font-style: normal !important;
+  font-size: 1rem !important;
+  text-transform: capitalize;
+}
+
+.indexData > span > span {
+  font-weight: 800;
+  font-style: normal !important;
+  font-size: 1rem !important;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  padding: 12px 4px;
+}
+

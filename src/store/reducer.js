@@ -1,11 +1,19 @@
 import { ActionType } from "redux-promise-middleware";
-import { LOGIN_WITH_GITHUB, GET_GITHUB_TOKEN } from "./types";
+import {
+  LOGIN_WITH_GITHUB,
+  GET_GITHUB_TOKEN,
+  GET_USER_INFO,
+  LOGIN,
+} from "./types";
 
 const initialState = {
   isLoggedin: false,
   isLoadingAuth: false,
   isLoadingToken: false,
+  isLoadingData: false,
   accessToken: null,
+  userData: {},
+  errorMsg: "",
 };
 
 function reducer(state = initialState, action) {
@@ -19,6 +27,7 @@ function reducer(state = initialState, action) {
       };
 
     case `${LOGIN_WITH_GITHUB}_${ActionType.Fulfilled}`:
+    case `${LOGIN}`:
       return {
         ...state,
         isLoadingAuth: false,
@@ -49,6 +58,25 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         isLoadingToken: false,
+      };
+
+    case `${GET_USER_INFO}_${ActionType.Pending}`:
+      return {
+        ...state,
+        isLoadingData: true,
+      };
+    case `${GET_USER_INFO}_${ActionType.Fulfilled}`:
+      return {
+        ...state,
+        isLoadingData: false,
+        userData: payload,
+      };
+
+    case `${GET_USER_INFO}_${ActionType.Rejected}`:
+      return {
+        ...state,
+        isLoadingData: false,
+        errorMsg: payload.message,
       };
 
     default:

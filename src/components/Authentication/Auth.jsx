@@ -19,7 +19,6 @@ function Authentication() {
     
   useEffect(() => {
     if (isLoggedIn){
-      console.log(' User Logged in')
       navigate('/home')
     }
   }, [isLoggedIn, navigate]);
