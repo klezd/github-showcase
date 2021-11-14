@@ -61,5 +61,16 @@
     "nodemon": "^2.0.14",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.4.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "2.1.2"
+  },
+  "keywords": [
+    "github",
+    "heroku"
+  ],
+  "engines": {
+    "node": "14.17.1",
+    "npm": "7.20.6"
   }
 }
