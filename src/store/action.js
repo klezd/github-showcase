@@ -10,9 +10,12 @@ import {
 import { getUrl, scope, state } from "../utils";
 
 const redirectUri = getUrl("auth/login-with-github");
-const baseUri = window.location.origin.includes("localhost")
-  ? "http://localhost:5000"
-  : window.location.origin;
+
+//  below Comment for hosting
+// const baseUri = window.location.origin.includes("localhost")
+//   ? "http://localhost:5000"
+//   : window.location.origin;
+const baseUri = "";
 
 export const loginGithub = () => (dispatch) => {
   console.log("loginGithub");

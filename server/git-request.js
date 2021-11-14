@@ -50,6 +50,7 @@ module.exports = function (app) {
       ? "https://api.github.com/users/" + queryName
       : "https://api.github.com/user";
 
+    console.log(url);
     fetch(url, {
       headers: {
         Authorization: `token ${access_token}`,

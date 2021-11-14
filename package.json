@@ -24,6 +24,7 @@
     "handy-storage": "^2.1.6",
     "lodash.escape": "^4.0.1",
     "node-fetch": "^3.0.0",
+    "nodemon": "^2.0.15",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -31,13 +32,18 @@
     "react-router-dom": "^6.0.0",
     "react-scripts": "4.0.3",
     "redux": "^4.1.2",
+    "redux-promise-middleware": "^6.1.2",
+    "redux-thunk": "^2.4.0",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "concurrently \"cd server && nodemon index.js --trace-warning \" \"react-scripts start\" ",
+    "start-dev": "concurrently \"cd server && nodemon index.js --trace-warning \" \"react-scripts start\" ",
+    "start-client": "react-scripts start",
+    "start-local": "npm run build && npm run start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "cd server && node index.js"
   },
   "eslintConfig": {
     "extends": [
@@ -56,11 +62,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.14",
-    "redux-promise-middleware": "^6.1.2",
-    "redux-thunk": "^2.4.0"
   },
   "optionalDependencies": {
     "fsevents": "2.1.2"

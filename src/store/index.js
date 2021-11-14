@@ -3,7 +3,9 @@ import ReduxThunk from "redux-thunk";
 import promise from "redux-promise-middleware";
 import reducer from "./reducer";
 
-const isDevEnv = window.location.href.includes("localhost");
+const isDevEnv =
+  window.location.href.includes("localhost") ||
+  process.env.NODE_ENV !== "production";
 
 export const middlewares = [promise, ReduxThunk];
 
