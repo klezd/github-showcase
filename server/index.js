@@ -25,7 +25,10 @@ app.use((req, res, next) => {
   next();
 });
 // create a GET route
-app.get("/", (req, res) => {});
+app.get("/", (req, res) => {
+  console.log("Get /");
+  res.send("Request empty");
+});
 
 app.get("/express_backend", (req, res) => {
   res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });

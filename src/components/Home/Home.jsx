@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -6,32 +6,54 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 
 import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
+import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
 
 import LogoutIcon from '@mui/icons-material/Logout';
 import Fab from '@mui/material/Fab';
+
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import SearchIcon from '@mui/icons-material/Search';
 
 import styles from './styles.module.css';
 
 import HideOnScroll from "./HideOnScroll";
-import ScrollTop from "./ScrollTop";
+import ScrollTo from "./ScrollTo";
 
-import { setUserLogged, getUserInfo, getUserRepos, unauthorizeUser } from "../../store/action";
+import HeadingPart from "./Heading";
+import RepoItemCard from './../Repos/RepoItemCard';
+
+import { setUserLogged, 
+  getUserInfo, 
+  unauthorizeUser, 
+  getUserData 
+} from "../../store/action";
+
+import Loading from "../Loading/Loading";
 
 function Home(props) {
+  const [name, setName] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const logStatRedux = useSelector(s=> s.isLoggedin);
   const data = useSelector(s=> s.userData);
+  const loggedAs = useSelector(s => s.userLogged);
+  const userRepos = useSelector(s=> s.userRepos);
+  const userCont = useSelector(s=> s.userCont);
+  const loading = useSelector(s => s.isLoadingData);
+  const error = useSelector(s => s.errorLoadData)
 
   const isLoggedIn = localStorage.getItem("isLoggedIn") 
       ? localStorage.getItem("isLoggedIn") === "true" && true
       : logStatRedux;
   
   const loginuser = Object.keys(data).length !== 0 ? data.userlogin : "";
+
   useEffect(() => {
     if(!isLoggedIn) {
       navigate('/auth')
@@ -43,7 +65,7 @@ function Home(props) {
 
   useEffect(() => {
     if(loginuser) {
-      dispatch(getUserRepos());
+      dispatch(getUserData());
     }
   }, [loginuser, dispatch]);
 
@@ -51,9 +73,17 @@ function Home(props) {
     dispatch(unauthorizeUser())
   }
 
-  const openGithub = () => {
-    window.open(data.userurl, "_blank")
+  const getOtherInfo = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(getUserInfo(name));
+    document.getElementById("back-to-top-anchor").scrollIntoView({ behavior: 'smooth' });
   }
+
+  const handleChange = (event) => {
+    console.log(event.target.value)
+    setName(event.target.value);
+  };
 
   return (
     <div className={styles.root}>
@@ -63,49 +93,95 @@ function Home(props) {
             <Typography variant="h6" component="div">
               What behinds a git profile?
             </Typography>
-            <div onClick={logout}>
-              <LogoutIcon/>
+
+            <div className={styles.appBtn}>
+              <ScrollTo {...props} idTo="search-box" autoShown setPos={false}>
+                <PersonSearchIcon />
+              </ScrollTo>
+              <div onClick={logout}>
+                <LogoutIcon/>
+              </div>
             </div>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <Toolbar />
+      <Toolbar id="back-to-top-anchor" />
       
-      <Container maxWidth="md" className={styles.container}>
+      <Container maxWidth="lg" className={styles.container}>
         <Box className={styles.background}></Box>
         <Box className={styles.heading}>
-          <div className={styles.image}>
-            <img src={data.useravatar} alt={data.userlogin}></img>
-          </div>
-          <div className={styles.title}>
-            <div>
-              <Tooltip title={data.userlogin}>
-                <div className={styles.name} onClick={openGithub}>{data.username}</div>
-              </Tooltip>
-              <span>User logged as &nbsp;
-                <strong>{data.userlogin}</strong>
-              </span>
-              <br />
-              <span>{data.useremail}</span>
-            </div>
-            <div className={styles.indexData}>
-              {data.userindex && Object.keys(data.userindex).length !== 0 && Object.keys(data.userindex).map((idx, inum) => (
-                <span key={`index_${idx}_${inum}`} id={`index_${idx}_${inum}`} className={styles.indexline}>
-                  {idx.replaceAll("_", " ")}: &nbsp; <span>{data.userindex[idx]}</span>
-                  <br />
-                </span>
-              ))}
-            </div>
-          </div>
+          <HeadingPart data={data} loggedAs={loggedAs} />
         </Box>
-        <Box className={styles.content}></Box>
+
+        {loading && (
+          <Loading />
+        )}
+        
+        {error.length === 0 && !loading && (
+          <>
+            {userRepos.length !== 0  && <Box className={styles.reposList}>
+              <Typography variant="h5" component="div">Public Repositories</Typography>
+              <div className={styles.content}>
+                {userRepos.length !== 0 && userRepos.map((repo, index) => {
+                  const {id} = repo;
+                  return (
+                    <RepoItemCard key={`repo_${id}_${index}`} repo={repo} />
+                  )
+                })}
+              </div>
+            </Box>}
+            {userCont.length !== 0 && <Box className={styles.contributions}>
+              <Typography variant="h5" component="div">History of Contribute</Typography>          
+            </Box>}
+          </>
+        )}
+
+        {error.length !== 0 && (
+          <Box styles={{display: 'flex', justifyContent: "center", alignItems: "center"}}>
+            {error}
+          </Box>
+        )}        
+
       </Container>
 
-      <ScrollTop {...props}>
-        <Fab color="secondary" size="small" aria-label="scroll back to top">
+      <Toolbar id="search-box"></Toolbar>
+
+      <Container maxWidth="lg" className={styles.container}>
+        <Box styles={{display: 'flex', justifyContent: "center", alignItems: "center", paddingBottom: "40px"}}>
+          <Typography variant="h5" component="div">View Other Profile ?</Typography>
+          <Paper
+            component="form"
+            className={styles.search}
+            onSubmit={getOtherInfo}
+          >
+            <InputBase
+              id="Github-uname"
+              value={name}
+              onChange={handleChange}
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Github Username"
+              inputProps={{ 'aria-label': 'Search Github Username' }}
+            />
+            <IconButton 
+              color="primary" 
+              aria-label="search" 
+              sx={{ p: '10px' }} 
+              component="span" 
+              size="large"
+              type="submit"
+            >
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </Box>
+
+      </Container>
+
+      <ScrollTo {...props} idTo="back-to-top-anchor">
+        <Fab color="primary" size="small" aria-label="scroll back to top">
           <KeyboardArrowUpIcon />
         </Fab>
-      </ScrollTop>
+      </ScrollTo>
 
     </div>
   );

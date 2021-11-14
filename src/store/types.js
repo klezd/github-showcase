@@ -7,3 +7,5 @@ export const LOGIN_WITH_GITHUB = "LOGIN_WITH_GITHUB";
 
 export const GET_USER_INFO = "GET_USER_INFO";
 export const GET_USER_REPOS = "GET_USER_REPOS";
+export const GET_USER_CONTRIBUTE = "GET_USER_CONTRIBUTE";
+export const GET_USER_DATA = "GET_USER_DATA";

@@ -1,0 +1,50 @@
+.cardRoot {
+  width: 100%;
+  padding: 8px;
+  min-height: 50px;
+}
+
+.box {
+  box-shadow: rgba(0, 0, 0, 0) 0px 4px 12px;
+  border-radius: 5px;
+  border: rgba(0,0,0,0.5) 1px solid;
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.box:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
+}
+
+.title {
+  min-height: 60px;
+  padding: 6px;
+  border-bottom: rgba(0,0,0,0.5) 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box:hover > .title,
+.box:hover > .fork {
+  background-color: #1876D2;
+  font-weight: 800;
+  color: #fff;
+}
+
+.boxContent {
+  padding: 2px 4px;
+}
+
+.boxContent > div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.fork {
+  position: absolute;
+  right: 3px;
+  top: 0px;
+}

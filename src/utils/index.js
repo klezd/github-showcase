@@ -16,3 +16,4 @@ export const getQueryParams = (queryString) => {
   }, {});
   return obj;
 };
+

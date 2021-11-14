@@ -3,16 +3,19 @@ import {
   LOGIN_WITH_GITHUB,
   GET_GITHUB_TOKEN,
   GET_USER_INFO,
-  GET_USER_REPOS,
+  GET_USER_DATA,
   LOGIN,
 } from "./types";
 
 import { getUrl, scope, state } from "../utils";
 
 const redirectUri = getUrl("auth/login-with-github");
-const baseUri = "http://localhost:5000";
+const baseUri = window.location.origin.includes("localhost")
+  ? "http://localhost:5000"
+  : window.location.origin;
 
 export const loginGithub = () => (dispatch) => {
+  console.log("loginGithub");
   dispatch({
     type: `${LOGIN_WITH_GITHUB}_${ActionType.Pending}`,
   });
@@ -37,6 +40,7 @@ export const loginGithub = () => (dispatch) => {
 };
 
 export const getGithubAccessToken = (code) => async (dispatch) => {
+  console.log("getGithubAccessToken");
   dispatch({
     type: `${GET_GITHUB_TOKEN}_${ActionType.Pending}`,
   });
@@ -64,12 +68,14 @@ export const getGithubAccessToken = (code) => async (dispatch) => {
 };
 
 export const setUserLogged = () => (dispatch) => {
+  console.log("setUserLogged");
   dispatch({
     type: LOGIN,
   });
 };
 
 export const unauthorizeUser = () => (dispatch) => {
+  console.log("unauthorizeUser");
   window.location.href = "/";
   localStorage.clear();
   dispatch({ type: "UNAUTHORIZE" });
@@ -103,31 +109,76 @@ export const getUserInfo = (name) => async (dispatch) => {
   }
 };
 
-export const getUserRepos = () => async (dispatch) => {
-  console.count("getUserRepos");
-
+export const getUserData = () => async (dispatch) => {
+  console.count("getUserData");
   dispatch({
-    type: `${GET_USER_REPOS}_${ActionType.Pending}`,
+    type: `${GET_USER_DATA}_${ActionType.Pending}`,
   });
 
   const url = baseUri + "/user-repos";
-  console.log(url);
   const res = await fetch(url);
-  console.log(res);
+
   if (res.ok) {
     const data = await res.json();
-    console.log(data);
+    const reposArr = data.sort((a, b) =>
+      a["updated_at"] < b["updated_at"]
+        ? 1
+        : a["updated_at"] > b["updated_at"]
+        ? -1
+        : 0
+    );
+
     return dispatch({
-      type: `${GET_USER_REPOS}_${ActionType.Fulfilled}`,
-      payload: data,
+      type: `${GET_USER_DATA}_${ActionType.Fulfilled}`,
+      payload: reposArr,
     });
   } else {
     const error = await res.json();
-
     console.log(error);
     return dispatch({
-      type: `${GET_USER_REPOS}_${ActionType.Rejected}`,
-      payload: error,
+      type: `${GET_USER_DATA}_${ActionType.Rejected}`,
+      payload: error.message,
     });
   }
 };
+
+// // TODO Remove comment and fix error of 500 / fetch anomyous
+// export const getUserData = () => async (dispatch) => {
+//   console.count("getUserData");
+
+//   dispatch({
+//     type: `${GET_USER_DATA}_${ActionType.Pending}`,
+//   });
+
+//   const repoUrl = baseUri + "/user-repos";
+//   // const contUrl = baseUri + "/user-contribute";
+
+//   try {
+//     let [reposRaw /* contributeRaw */] = await Promise.all([
+//       fetch(repoUrl),
+//       // fetch(contUrl),
+//     ]);
+//     const reposData = await reposRaw.json();
+//     // const contData = await contributeRaw.json();
+//     const reposArr = reposData.sort((a, b) =>
+//       a["updated_at"] < b["updated_at"]
+//         ? 1
+//         : a["updated_at"] > b["updated_at"]
+//         ? -1
+//         : 0
+//     );
+
+//     dispatch({
+//       type: `${GET_USER_DATA}_${ActionType.Fulfilled}`,
+//       payload: { /* contribute: contData, */ repos: reposArr },
+//     });
+//   } catch (e) {
+//     console.log(e);
+//     return dispatch({
+//       type: `${GET_USER_DATA}_${ActionType.Rejected}`,
+//       payload: e.message,
+//     });
+//   }
+// };
+
+export const getARepo = (uname, id) => async (dispatch) => {};

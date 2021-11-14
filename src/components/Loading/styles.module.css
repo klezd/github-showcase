@@ -1,0 +1,66 @@
+.root {
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingObj {
+  position: relative;
+  min-width: 50px;
+  min-height: 50px;
+  height: auto;
+  width: auto;
+}
+
+.loadingObj > svg {
+  position: absolute;
+  font-size: 48px;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  color: rgba(24, 118, 210, 0.8);
+}
+
+.emptyHg {
+  animation-name: emptyHgAnim;
+}
+
+.fullHg {
+  animation: fullHgAnim;
+}
+
+
+/* Animation frames */
+@keyframes emptyHgAnim {
+  0% {
+    transform: rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg);    
+    opacity: 0;
+
+  }
+  100% {
+    transform: rotate(0);    
+    opacity: 1;
+  }
+}
+
+@keyframes fullHgAnim {
+  0% {
+    transform: rotate(0);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(180deg);    
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(0);
+    opacity: 0;
+  }
+}

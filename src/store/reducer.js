@@ -3,17 +3,22 @@ import {
   LOGIN_WITH_GITHUB,
   GET_GITHUB_TOKEN,
   GET_USER_INFO,
+  GET_USER_DATA,
   LOGIN,
 } from "./types";
 
 const initialState = {
   isLoggedin: false,
+  userLogged: "",
   isLoadingAuth: false,
   isLoadingToken: false,
   isLoadingData: false,
   accessToken: null,
   userData: {},
+  userRepos: [],
+  userCont: [],
   errorMsg: "",
+  errorLoadData: "",
 };
 
 function reducer(state = initialState, action) {
@@ -61,6 +66,7 @@ function reducer(state = initialState, action) {
       };
 
     case `${GET_USER_INFO}_${ActionType.Pending}`:
+    case `${GET_USER_DATA}_${ActionType.Pending}`:
       return {
         ...state,
         isLoadingData: true,
@@ -69,7 +75,18 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         isLoadingData: false,
-        userData: payload,
+        userData: payload.data,
+        userLogged: payload.loggedAs,
+      };
+
+    case `${GET_USER_DATA}_${ActionType.Fulfilled}`:
+      return {
+        ...state,
+        isLoadingData: false,
+        userRepos: payload,
+        // userRepos: payload.repos,
+        // userCont: payload.contribute,
+        errorLoadData: "",
       };
 
     case `${GET_USER_INFO}_${ActionType.Rejected}`:
@@ -77,6 +94,13 @@ function reducer(state = initialState, action) {
         ...state,
         isLoadingData: false,
         errorMsg: payload.message,
+      };
+    case `${GET_USER_DATA}_${ActionType.Rejected}`:
+      return {
+        ...state,
+        isLoadingData: false,
+        errorLoadData:
+          "Error Occurred! Please reload the site or come back later!",
       };
 
     default:

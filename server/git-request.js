@@ -45,7 +45,7 @@ module.exports = function (app) {
   app.get("/user-info", (req, res) => {
     const queryName = req.query.name;
     const access_token = storage.state.access_token;
-
+    console.log("API GET /user-info ", queryName);
     const url = queryName
       ? "https://api.github.com/users/" + queryName
       : "https://api.github.com/user";
@@ -80,8 +80,11 @@ module.exports = function (app) {
             public_repos,
           },
         };
+        if (!queryName) {
+          storage.setState({ userLogged: login });
+        }
         storage.setState({ [`user_${id}`]: data, currentUser: login });
-        return res.json(data);
+        return res.json({ data, loggedAs: storage.state.userLogged });
       })
       .catch((error) => {
         console.error(error);
@@ -96,7 +99,6 @@ module.exports = function (app) {
     const access_token = storage.state.access_token;
     const user = storage.state.currentUser;
     const url = "https://api.github.com/users/" + user + "/repos";
-    console.log(user, url);
 
     fetch(url, {
       headers: {
@@ -104,8 +106,6 @@ module.exports = function (app) {
       },
     })
       .then((r) => {
-        console.log(r);
-
         if (!r.ok) {
           console.log(r);
           throw Error("Bad request");
@@ -113,8 +113,70 @@ module.exports = function (app) {
         return r.json();
       })
       .then((response) => {
-        console.log(response);
         return res.json(response);
+      })
+      .catch((error) => {
+        console.error(error);
+        return res.status(400).json({
+          message: "Error occurred! Please check the user name again!",
+        });
+      });
+  });
+
+  app.get("/user-contribute", (req, res) => {
+    console.log("API GET user-contribute");
+    const user = storage.state.currentUser;
+    const url = "https://gh-calendar.rschristian.dev/user/" + user;
+
+    fetch(url)
+      .then((r) => {
+        if (!r.ok) {
+          console.log(r);
+          throw Error("Bad request");
+        }
+        return r.json();
+      })
+      .then((response) => {
+        const total = response.total;
+        const period = 4; // 4 weeks
+        let data = [];
+        const contribute = response.contributions;
+        if (contribute.length !== 0) {
+          for (let i = 0; i < contribute.length; i = i + period) {
+            let count = 0;
+            let firstDate = "";
+            let lastDate = "";
+
+            for (let k = i; k < i + period; k++) {
+              const dataOfWeek = contribute[k];
+              if (!dataOfWeek) {
+                lastDate = contribute[k - 1][contribute[k - 1].length - 1].date;
+                break;
+              }
+              const lengthOfItem = dataOfWeek.length; // 7
+
+              for (let j = 0; j < lengthOfItem; j++) {
+                count = dataOfWeek[j].count;
+              }
+              if (k === i) {
+                firstDate = contribute[k][0].date;
+              } else if (k === i + period - 1) {
+                lastDate = contribute[k][lengthOfItem - 1].date;
+              }
+            }
+            const obj = {
+              count,
+              date: firstDate + "to" + lastDate,
+            };
+            console.log(obj);
+            data.push(obj);
+          }
+        } else {
+          data = [];
+        }
+
+        const returnObj = { total, data };
+        return res.json(returnObj);
       })
       .catch((error) => {
         console.error(error);
